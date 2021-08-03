@@ -1,0 +1,2 @@
+# Include image files in the package
+recursive-include anyskin/visualizations/images *.png
