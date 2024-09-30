@@ -73,8 +73,8 @@ class ReSkinBase(serial.Serial):
         try:
             self.get_sample()
             print("Initialization successful")
-        except:
-            print("Initialization failed. Please disconnect and reconnect sensor.")
+        except Exception as e:
+            print(f"Initialization failed with error: {e}")
 
     def get_data(self, num_samples):
         """
@@ -88,11 +88,7 @@ class ReSkinBase(serial.Serial):
         data = []
         for _ in range(num_samples):
             t, sample = self.get_sample()
-            data.append(
-                np.concatenate(
-                    ([t], sample)
-                )
-            )
+            data.append(np.concatenate(([t], sample)))
 
         return data
 
@@ -151,7 +147,6 @@ class ReSkinDummy(ReSkinBase):
         temp_filtered: bool = False,
         reskin_data_struct: bool = True,
     ):
-
         self.num_mags = num_mags
         self.port_name = port
         self.baud_rate = baudrate
@@ -171,7 +166,7 @@ class ReSkinDummy(ReSkinBase):
 
     def get_sample(self):
         collect_start = time.time()
-        data = np.random.uniform(-1., 1., size=(np.sum(self._temp_mask),))
+        data = np.random.uniform(-1.0, 1.0, size=(np.sum(self._temp_mask),))
         acq_delay = time.time() - collect_start
 
         return collect_start, acq_delay, data

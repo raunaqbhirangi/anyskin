@@ -1,5 +1,4 @@
 import os
-import sys
 from setuptools import setup, find_packages
 
 
@@ -13,7 +12,7 @@ setup(
     author="Raunaq Bhirangi",
     author_email="rbhirang@andrew.cmu.edu",
     description="Data acquisition library for a ReSkin sensor",
-    long_description=read('README.md'),
+    long_description=read("README.md"),
     packages=find_packages(),
     install_requires=["numpy>=1.21.3", "pyserial>=3.5"],
     python_requires=">=3.6",

@@ -6,7 +6,7 @@ from multiprocessing import Process, Event, Pipe, Value, Array
 import numpy as np
 import serial
 
-from .sensor import ReSkinBase, ReSkinData, ReSkinDummy
+from .sensor import ReSkinBase, ReSkinDummy
 
 
 class ReSkinProcess(Process):
@@ -70,7 +70,7 @@ class ReSkinProcess(Process):
         self.burst_mode = burst_mode
         self.device_id = device_id
         self.temp_filtered = temp_filtered
-        
+
         self._pipe_in, self._pipe_out = Pipe()
         self._sample_cnt = Value(ct.c_uint64)
         self._buffer_size = Value(ct.c_uint64)
