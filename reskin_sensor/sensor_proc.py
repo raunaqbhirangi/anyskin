@@ -57,13 +57,10 @@ class ReSkinProcess(Process):
         self,
         num_mags: int = 1,
         port: str = None,
-        baudrate: int = 115200,
-        burst_mode: bool = True,
         device_id: int = -1,
-        temp_filtered: bool = False,
-        reskin_data_struct: bool = True,
-        allow_dummy_sensor: bool = False,
-        chunk_size: int = 10000,
+        temp_filtered: bool = True,
+        burst_mode: bool = True,
+        baudrate: int = 115200,
     ):
         """Initializes a ReSkinProcess object."""
         super(ReSkinProcess, self).__init__()
@@ -73,18 +70,16 @@ class ReSkinProcess(Process):
         self.burst_mode = burst_mode
         self.device_id = device_id
         self.temp_filtered = temp_filtered
-        self.reskin_data_struct = reskin_data_struct
-        self.allow_dummy_sensor = allow_dummy_sensor
-
+        
         self._pipe_in, self._pipe_out = Pipe()
         self._sample_cnt = Value(ct.c_uint64)
         self._buffer_size = Value(ct.c_uint64)
 
         self._last_time = Value(ct.c_double)
-        self._last_delay = Value(ct.c_double)
         self._last_reading = Array(ct.c_float, self.num_mags * (4 - temp_filtered))
 
-        self._chunk_size = chunk_size
+        # Size of chunks piped through buffer
+        self._chunk_size = 10000
 
         self._event_is_streaming = Event()
         self._event_quit_request = Event()
@@ -96,23 +91,12 @@ class ReSkinProcess(Process):
 
     @property
     def last_reading(self):
-        if self.reskin_data_struct:
-            return ReSkinData(
-                time=self._last_time.value,
-                acq_delay=self._last_delay.value,
-                data=self._last_reading[:],
-                dev_id=self.device_id,
+        return np.concatenate(
+            (
+                [self._last_time.value],
+                self._last_reading[:],
             )
-        else:
-            return np.concatenate(
-                (
-                    [self._last_time.value],
-                    [self._last_delay.value],
-                    self._last_reading[:],
-                    [self.device_id],
-                )
-            )
-        # return self._last_reading
+        )
 
     @property
     def sample_cnt(self):
@@ -233,7 +217,6 @@ class ReSkinProcess(Process):
                 burst_mode=self.burst_mode,
                 device_id=self.device_id,
                 temp_filtered=self.temp_filtered,
-                reskin_data_struct=True,
             )
             # self.sensor._initialize()
             self.start_streaming()
@@ -263,7 +246,6 @@ class ReSkinProcess(Process):
                     # just started should go here
                 (
                     self._last_time.value,
-                    self._last_delay.value,
                     self._last_reading[:],
                 ) = self.sensor.get_sample()
 

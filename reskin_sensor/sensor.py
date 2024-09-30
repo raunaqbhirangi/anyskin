@@ -41,11 +41,10 @@ class ReSkinBase(serial.Serial):
         self,
         num_mags: int = 1,
         port: str = None,
-        baudrate: int = 115200,
         burst_mode: bool = True,
         device_id: int = -1,
         temp_filtered: bool = False,
-        reskin_data_struct: bool = True,
+        baudrate: int = 115200,
     ) -> None:
         """Initializes a ReSkinBase object."""
 
@@ -54,7 +53,6 @@ class ReSkinBase(serial.Serial):
         self.baud_rate = baudrate
         self.burst_mode = burst_mode
         self.device_id = device_id
-        self.reskin_data_struct = reskin_data_struct
 
         self._msg_floats = 4 * num_mags
         self._msg_length = 4 * self._msg_floats + 2
@@ -89,26 +87,16 @@ class ReSkinBase(serial.Serial):
         """
         data = []
         for _ in range(num_samples):
-            t, acqd, sample = self.get_sample()
-            if self.reskin_data_struct:
-                data.append(
-                    ReSkinData(
-                        time=t,
-                        acq_delay=acqd,
-                        data=sample,
-                        dev_id=self.device_id,
-                    )
+            t, sample = self.get_sample()
+            data.append(
+                np.concatenate(
+                    ([t], sample)
                 )
-            else:
-                data.append(
-                    np.concatenate(
-                        ([t], [acqd], sample, [self.device_id])
-                    )
-                )
+            )
 
         return data
 
-    def get_sample(self, num_samples=1):
+    def get_sample(self):
         """
         Collects requisite bytes of data from the serial communication
         channel
@@ -145,9 +133,7 @@ class ReSkinBase(serial.Serial):
                     decoded_zero_bytes = zero_bytes.decode("utf-8")
                     decoded_zero_bytes = decoded_zero_bytes.strip()
                     decoded_zero_bytes = [float(x) for x in decoded_zero_bytes.split()]
-
-                acq_delay = time.time() - collect_start
-                return collect_start, acq_delay, np.array(decoded_zero_bytes)[self._temp_mask]
+                return collect_start, np.array(decoded_zero_bytes)[self._temp_mask]
 
             else:
                 # Need checks to timeout if required
@@ -183,7 +169,7 @@ class ReSkinDummy(ReSkinBase):
     def _initialize(self):
         pass
 
-    def get_sample(self, num_samples=1):
+    def get_sample(self):
         collect_start = time.time()
         data = np.random.uniform(-1., 1., size=(np.sum(self._temp_mask),))
         acq_delay = time.time() - collect_start
