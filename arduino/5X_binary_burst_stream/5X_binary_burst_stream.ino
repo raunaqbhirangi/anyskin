@@ -29,10 +29,10 @@ MLX90393::txyz data3 = {0,0,0,0};
 MLX90393::txyz data4 = {0,0,0,0};
 
 uint8_t mlx0_i2c = 0x0C; // these are the I2C addresses of the five chips that share one I2C bus
-uint8_t mlx1_i2c = 0x13;
-uint8_t mlx2_i2c = 0x12;
-uint8_t mlx3_i2c = 0x10;
-uint8_t mlx4_i2c = 0x11;
+uint8_t mlx1_i2c = 0x0D;
+uint8_t mlx2_i2c = 0x0E;
+uint8_t mlx3_i2c = 0x0F;
+uint8_t mlx4_i2c = 0x10;
 
 void setup()
 {
@@ -83,8 +83,5 @@ void loop()
   Serial.write((byte*)&data3, sizeof(data3));  
   Serial.write((byte*)&data4, sizeof(data4));  
   Serial.println();
-
-  //adjust delay to achieve desired sampling rate
-  delayMicroseconds(500);
 
 }
