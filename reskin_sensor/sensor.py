@@ -41,9 +41,9 @@ class ReSkinBase(serial.Serial):
         self,
         num_mags: int = 1,
         port: str = None,
-        burst_mode: bool = True,
         device_id: int = -1,
-        temp_filtered: bool = False,
+        temp_filtered: bool = True,
+        burst_mode: bool = True,
         baudrate: int = 115200,
     ) -> None:
         """Initializes a ReSkinBase object."""

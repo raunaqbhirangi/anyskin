@@ -78,6 +78,7 @@ class ReSkinProcess(Process):
         self._last_time = Value(ct.c_double)
         self._last_reading = Array(ct.c_float, self.num_mags * (4 - temp_filtered))
 
+        self.allow_dummy_sensor = False
         # Size of chunks piped through buffer
         self._chunk_size = 10000
 

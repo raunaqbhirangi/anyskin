@@ -5,11 +5,11 @@ from reskin_sensor import ReSkinProcess
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Test code to run a ReSkin streaming process in the background. Allows data to be collected without code blocking"
+        description="Test code to run a ReSkin streaming process in the background. \
+        Allows data to be collected without code blocking"
     )
     # fmt: off
     parser.add_argument("-p", "--port", type=str, help="port to which the microcontroller is connected", required=True,)
-    parser.add_argument("-b", "--baudrate", type=str, help="baudrate at which the microcontroller is streaming data", default=115200,)
     parser.add_argument("-n", "--num_mags", type=int, help="number of magnetometers on the sensor board", default=5,)
     parser.add_argument("-tf", "--temp_filtered", action="store_true", help="flag to filter temperature from sensor output",)
     # fmt: on
@@ -19,9 +19,6 @@ if __name__ == "__main__":
     sensor_stream = ReSkinProcess(
         num_mags=args.num_mags,
         port=args.port,
-        baudrate=args.baudrate,
-        burst_mode=True,
-        device_id=1,
         temp_filtered=args.temp_filtered,
     )
 
@@ -54,7 +51,10 @@ if __name__ == "__main__":
             "Columns: ",
             ", \t".join(
                 [
-                    ((not args.temp_filtered)*"T{0}, \t" + "Bx{0}, \tBy{0}, \tBz{0}").format(ind)
+                    (
+                        (not args.temp_filtered) * "T{0}, \t"
+                        + "Bx{0}, \tBy{0}, \tBz{0}"
+                    ).format(ind)
                     for ind in range(args.num_mags)
                 ]
             ),
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         for sid, sample in enumerate(test_samples):
             print(
                 "Sample {}: ".format(sid + 1)
-                + str(["{:.2f}".format(d) for d in sample.data])
+                + str(["{:.2f}".format(d) for d in sample[1:]])
             )
 
         # Pause sensor stream

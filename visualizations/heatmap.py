@@ -10,18 +10,8 @@ from reskin_sensor import ReSkinProcess
 
 
 def plot_heatmap(data, num_mags):
-    data_dim = data.shape[-1]
-
-    data_mask = np.zeros((data_dim,), dtype=bool)
-    data_mask[2:-1] = True
-
-    # Filter temperature if required
-    if data_dim == 4 * num_mags + 3:
-        data_mask[2:-1:4] = False
-
     fig, axs = plt.subplots(2, 1, figsize=(8, 16))
-
-    filt_data = data[..., data_mask]
+    filt_data = data[..., 1:]
     times = data[..., 0] - data[0, 0]
     axs[0].plot(times, filt_data)
     axs[0].set_xlabel("Time, in s")
@@ -47,7 +37,7 @@ def update_data(ax, sensor, init_time, baseline, ln, xdata, ydata, i):
     buf = np.array(sensor.get_buffer())
     sensor.start_buffering()
     times = buf[:, 0] - init_time
-    data = buf[:, 2:-1] - baseline
+    data = buf[:, 1:] - baseline
 
     xdata.extend(list(times))
     ydata.extend(list(data))
@@ -67,7 +57,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Visualize ReSkin data as a heatmap")
     parser.add_argument("--stream", action="store_true", help="Flag to stream live data")
     parser.add_argument("-nm", "--num-mags", type=int, required=True, help="Number of magnetometers")
-    parser.add_argument("-p", "--port", type=str, default="/dev/ttyACM0", help="ReSkin post; ignored if not streaming")
+    parser.add_argument("-p", "--port", type=str, default="/dev/ttyACM0", help="ReSkin port; ignored if not streaming")
     parser.add_argument("-ws", "--window-size", type=int, default=1000, help="Number of samples visualized at a time")
     parser.add_argument("--lims", type=float, nargs=2, default=[-300., 300.], help="Colorbar limits for streaming")
 
@@ -82,13 +72,11 @@ if __name__ == "__main__":
         reskin = ReSkinProcess(
             num_mags=args.num_mags,
             port=args.port,
-            temp_filtered=True,
-            reskin_data_struct=False,
         )
         reskin.start()
         time.sleep(1.0)
         init_data = np.array(reskin.get_data(num_samples))
-        baseline = np.mean(init_data[..., 2:-1], axis=0, keepdims=True)
+        baseline = np.mean(init_data[..., 1:], axis=0, keepdims=True)
         init_time = init_data[0, 0]
 
         reskin.start_buffering()
@@ -97,7 +85,7 @@ if __name__ == "__main__":
         xdata, ydata = deque(maxlen=num_samples), deque(maxlen=num_samples)
 
         xdata.extend(list(init_data[..., 0]) - init_time)
-        ydata.extend(list(init_data[..., 2:-1] - baseline))
+        ydata.extend(list(init_data[..., 1:] - baseline))
 
         ln = ax.pcolormesh(np.array(ydata).T, vmin=args.lims[0], vmax=args.lims[1])
         ax.set_xticks(np.arange(0, num_samples, max(1, num_samples // 10)))
@@ -126,13 +114,7 @@ if __name__ == "__main__":
         data_dim = data.shape[-1]
 
         data_mask = np.zeros((data_dim,), dtype=bool)
-        data_mask[2:-1] = True
-
-        # Filter temperature if required
-        if data_dim == 4 * num_mags + 3:
-            data_mask[2:-1:4] = False
 
         with open(data_path, "rb") as f:
             data = np.load(f)
-            # test_data = data["task"][..., data_mask]
         plot_heatmap(data, num_mags)

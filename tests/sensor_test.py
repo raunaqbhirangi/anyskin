@@ -9,7 +9,6 @@ if __name__ == "__main__":
         description="Test code to query ReSkin for a fixed number of data samples"
     )
     parser.add_argument("-p", "--port", type=str, help="port to which the microcontroller is connected", required=True,)
-    parser.add_argument("-b", "--baudrate", type=str, help="baudrate at which the microcontroller is streaming data", default=115200,)
     parser.add_argument("-n", "--num_mags", type=int, help="number of magnetometers on the sensor board", default=5,)
     # fmt: on
     args = parser.parse_args()
@@ -18,7 +17,7 @@ if __name__ == "__main__":
         test_sensor = ReSkinBase(
             num_mags=args.num_mags,
             port=args.port,
-            baudrate=args.baudrate,
+            temp_filtered=False,
             burst_mode=True,
             device_id=1,
         )
@@ -48,5 +47,5 @@ if __name__ == "__main__":
     for sid, sample in enumerate(test_samples):
         print(
             "Sample {}: ".format(sid + 1)
-            + str(["{:.2f}".format(d) for d in sample.data])
+            + str(["{:.2f}".format(d) for d in sample[1:]])
         )
