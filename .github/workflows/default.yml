@@ -1,7 +1,9 @@
 
 name: Default Workflow
 run-name: Default set of Github Actions
-on: [push]
+on:
+  registry_package:
+    types: [published]
 jobs:
   Default-Actions:
     runs-on: ubuntu-latest
