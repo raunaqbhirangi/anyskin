@@ -17,4 +17,9 @@ setup(
     install_requires=["numpy>=1.21.3", "pyserial>=3.5"],
     python_requires=">=3.6",
     url="https://github.com/raunaqbhirangi/anyskin.git",
+    entry_points={
+        "console_scripts": [
+            "anyskin_viz=anyskin.visualizations.anyskin_viz:default_viz"
+        ],
+    },
 )

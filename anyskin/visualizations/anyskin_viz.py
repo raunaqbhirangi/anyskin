@@ -1,34 +1,29 @@
+#!/usr/bin/env python
+
 import time
 import numpy as np
 import os
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+import sys
 import pygame
 from datetime import datetime
 from anyskin import AnySkinProcess
 import argparse
 
-if __name__ == "__main__":
-    # fmt: off
-    parser = argparse.ArgumentParser(description="Test code to run a AnySkin streaming process in the background. Allows data to be collected without code blocking")
-    parser.add_argument("-p", "--port", type=str, help="port to which the microcontroller is connected", default="/dev/cu.usbmodem101")
-    parser.add_argument("-f", "--file", type=str, help="path to load data from", default=None)
-    parser.add_argument("-v", "--viz_mode", type=str, help="visualization mode", default="3d_viz", choices=["magnitude", "3d_viz"])
-    parser.add_argument("-s", "--scaling", type=float, help="scaling factor for visualization", default=7.0)
-    parser.add_argument('-r', '--record', action='store_true', help='record data')
-    args = parser.parse_args()
-    # fmt: on
-    if args.file is None:
+
+def visualize(port, file=None, viz_mode="3axis", scaling=7.0, record=False):
+    if file is None:
         sensor_stream = AnySkinProcess(
             num_mags=5,
-            port=args.port,
+            port=port,
         )
         # Start sensor stream
         sensor_stream.start()
         time.sleep(1.0)
         filename = "data/data_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     else:
-        load_data = np.loadtxt(args.file)
+        load_data = np.loadtxt(file)
 
     pygame.init()
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -67,11 +62,11 @@ if __name__ == "__main__":
         # print(angles)
         # Draw the chip locations
         for magid, chip_location in enumerate(chip_locations):
-            if args.viz_mode == "magnitude":
+            if viz_mode == "magnitude":
                 pygame.draw.circle(
-                    window, (255, 83, 72), chip_location, data_mag[magid] / args.scaling
+                    window, (255, 83, 72), chip_location, data_mag[magid] / scaling
                 )
-            elif args.viz_mode == "3d_viz":
+            elif viz_mode == "3axis":
                 if data[magid, -1] < 0:
                     width = 2
                 else:
@@ -80,7 +75,7 @@ if __name__ == "__main__":
                     window,
                     (255, 0, 0),
                     chip_location,
-                    np.abs(data[magid, -1]) / args.scaling,
+                    np.abs(data[magid, -1]) / scaling,
                     width,
                 )
                 arrow_start = chip_location
@@ -98,8 +93,8 @@ if __name__ == "__main__":
                 )
                 data_xy = np.dot(rotation_mat, data[magid, :2])
                 arrow_end = (
-                    chip_location[0] + data_xy[0] / args.scaling,
-                    chip_location[1] + data_xy[1] / args.scaling,
+                    chip_location[0] + data_xy[0] / scaling,
+                    chip_location[1] + data_xy[1] / scaling,
                 )
                 pygame.draw.line(window, (0, 255, 0), arrow_start, arrow_end, 2)
 
@@ -109,22 +104,13 @@ if __name__ == "__main__":
         baseline = np.mean(baseline_data, axis=0)
         return baseline
 
-    frames = []
-
-    def capture_frame(screen, frame_num):
-        filename = f"frame_{frame_num}.png"
-        pygame.image.save(screen, filename)  # Save the current screen as a PNG file
-        frames.append(filename)  # Keep track of the saved frames
-
     time.sleep(0.1)
-    if args.file is None:
+    if file is None:
         baseline = get_baseline()
     frame_num = 0
     running = True
     data = []
     data_len = 30000
-    data_offset = 0
-    start_time = time.time()
     clock = pygame.time.Clock()
     FPS = 60
     while running:
@@ -142,7 +128,7 @@ if __name__ == "__main__":
                     baseline_data = sensor_stream.get_data(num_samples=5)
                     baseline_data = np.array(baseline_data)[:, 1:]
                     baseline = np.mean(baseline_data, axis=0)
-        if args.file is not None:
+        if file is not None:
             sensor_data = load_data[data_len]
             data_len += 24
             baseline = np.zeros_like(sensor_data)
@@ -156,9 +142,26 @@ if __name__ == "__main__":
         pygame.display.update()
         clock.tick(FPS)
     pygame.quit()
-    if args.file is None:
+    if file is None:
         sensor_stream.pause_streaming()
         sensor_stream.join()
         data = np.array(data)
-        if args.record:
+        if record:
             np.savetxt(f"{filename}.txt", data)
+
+
+def default_viz(argv=sys.argv):
+    visualize(port=argv[1])
+
+
+if __name__ == "__main__":
+    # fmt: off
+    parser = argparse.ArgumentParser(description="Test code to run a AnySkin streaming process in the background. Allows data to be collected without code blocking")
+    parser.add_argument("-p", "--port", type=str, help="port to which the microcontroller is connected", default="/dev/cu.usbmodem101")
+    parser.add_argument("-f", "--file", type=str, help="path to load data from", default=None)
+    parser.add_argument("-v", "--viz_mode", type=str, help="visualization mode", default="3axis", choices=["magnitude", "3axis"])
+    parser.add_argument("-s", "--scaling", type=float, help="scaling factor for visualization", default=7.0)
+    parser.add_argument('-r', '--record', action='store_true', help='record data')
+    args = parser.parse_args()
+    # fmt: on
+    visualize(args.port, args.file, args.viz_mode, args.scaling, args.record)
