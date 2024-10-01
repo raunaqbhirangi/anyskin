@@ -1,8 +1,8 @@
 import time
 import numpy as np
-from os import environ
+import os
 
-environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame
 from datetime import datetime
 from reskin_sensor import ReSkinProcess
@@ -11,7 +11,7 @@ import argparse
 if __name__ == "__main__":
     # fmt: off
     parser = argparse.ArgumentParser(description="Test code to run a ReSkin streaming process in the background. Allows data to be collected without code blocking")
-    parser.add_argument("-p", "--port", type=str, help="port to which the microcontroller is connected", default="/dev/cu.usbmodem1101")
+    parser.add_argument("-p", "--port", type=str, help="port to which the microcontroller is connected", default="/dev/cu.usbmodem101")
     parser.add_argument("-f", "--file", type=str, help="path to load data from", default=None)
     parser.add_argument("-v", "--viz_mode", type=str, help="visualization mode", default="3d_viz", choices=["magnitude", "3d_viz"])
     parser.add_argument("-s", "--scaling", type=float, help="scaling factor for visualization", default=7.0)
@@ -31,7 +31,8 @@ if __name__ == "__main__":
         load_data = np.loadtxt(args.file)
 
     pygame.init()
-    bg_image_path = "./images/viz_bg.png"
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    bg_image_path = os.path.join(dir_path, "images/viz_bg.png")
     # bg_image = plt.imread("anyskin.png")
     bg_image = pygame.image.load(bg_image_path)
     image_width, image_height = bg_image.get_size()

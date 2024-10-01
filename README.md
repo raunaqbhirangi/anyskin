@@ -1,7 +1,7 @@
 # Reskin Sensor Library
 This is a python library to interface with [ReSkin](https://openreview.net/forum?id=87_OJU4sw3V) sensors. We provide two classes for interfacing with [ReSkin](https://openreview.net/forum?id=87_OJU4sw3V). The `ReSkinBase` class is good for standalone data collection: it blocks code execution while data is being collected. The `ReSkinProcess` class can be used for non-blocking background data collection. Data can be buffered in the background while you run the rest of your code.
 
-Latest stable release is v2.0.0
+Latest stable release is v3.0.0
 
 ## Installation
 
@@ -9,8 +9,8 @@ This package can be installed using pip:
 ```
 pip install reskin_sensor
 ```
-Alternatively, if you would like the latest (potentially unstable) version, 
-1. Clone this repository using 
+Alternatively, if you would like the latest (potentially unstable) version,
+1. Clone this repository using
 ```
 $ git clone https://github.com/raunaqbhirangi/reskin_sensor.git --recursive
 ```
@@ -18,14 +18,33 @@ $ git clone https://github.com/raunaqbhirangi/reskin_sensor.git --recursive
 ```
 $ pip install -e .
 ```
-## Usage
 
-1. Connect the 5X board to the microcontroller. 
+## Usage: Quick Setup (AnySkin)
+This guide assumes you are using the AnySkin startup kit.
+
+1. Connect the magnetometer circuit board to the microcontroller using the provided QWIIC cable.
+
+2. Insert the circuit board into the fingertip slot and pull the skin over the printed 3D tip.
+
+3. Connect the microcontroller (Adafruit QT Py) to your computer using a USB-C cable.
+
+4. Find the dev path your microcontroller is connected to. The simplest way to do this is:
+<br><br>Linux: `ls /dev/ | grep -e ACM -e USB`
+<br>MacOS: `ls /dev/ | grep cu.usb`
+<br>Windows: `TODO`
+<br><br>If you have no other devices connected, this should give you a single path. If you see multiple, disconnect the microcontroller and run the command again. Reconnect the microcontroller and re-run the command. The additional path is your `device-port`
+
+5. Run the visualizer with the port identified in the previous step: <br>`python visualizations/anyskin_viz.py -p device-port`
+
+## Usage: Full Setup (ReSkin/AnySkin)
+This guide is recommended if you are relatively familiar with ReSkin/AnySkin and are using independently sourced components.
+
+1. Connect the magnetometer circuit board to the microcontroller.
 
 2. Connect the microcontroller (we recommend the Adafruit Trinket M0 or the Adafruit QT PY) to the computer using a suitable USB cable
 
 3. Use the [Arduino IDE](https://www.arduino.cc/en/software) to upload code to a microcontroller. The code as well as upload instructions can be found in the [arduino](./arduino) folder.
-If you get a `can't open device "<port-name>": Permission denied` error, modify permissions to allow read and write on that port. On Linux, this would look like 
+If you get a `can't open device "<port-name>": Permission denied` error, modify permissions to allow read and write on that port. On Linux, this would look like
 ```
 $ sudo chmod a+rw <port-name>
 ```
