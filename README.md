@@ -34,7 +34,7 @@ This guide assumes you are using the AnySkin startup kit.
 <br>Windows: `TODO`
 <br><br>If you have no other devices connected, this should give you a single path. If you see multiple, disconnect the microcontroller and run the command again. Reconnect the microcontroller and re-run the command. The additional path is your `device-port`
 
-5. Run the visualizer with the port identified in the previous step: <br>`python visualizations/anyskin_viz.py -p device-port`
+5. Run the visualizer with the port identified in the previous step: <br>`anyskin_viz device-port`
 
 ## Usage: Full Setup
 This guide is recommended if you are relatively familiar with AnySkin and are using independently sourced components.
