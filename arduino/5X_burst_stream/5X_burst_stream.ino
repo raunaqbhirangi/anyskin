@@ -16,23 +16,10 @@
 
 #define Serial SERIAL_PORT_USBVIRTUAL
 
-MLX90393 mlx0;
-MLX90393 mlx1;
-MLX90393 mlx2;
-MLX90393 mlx3;
-MLX90393 mlx4;
+MLX90393 mlx[5]; //Create an array of five MLX90393 objects
+MLX90393::txyz data[5] = {0,0,0,0}; //Create an array of five structures, called data, of four floats (t, x, y, and z)
+uint8_t mlx_i2c[5] = {0x0C, 0x0D, 0x0E, 0x0F, 0x10}; // these are the I2C addresses of the five chips that share one I2C bus
 
-MLX90393::txyz data0 = {0,0,0,0}; //Create a structure, called data, of four floats (t, x, y, and z)
-MLX90393::txyz data1 = {0,0,0,0};
-MLX90393::txyz data2 = {0,0,0,0};
-MLX90393::txyz data3 = {0,0,0,0};
-MLX90393::txyz data4 = {0,0,0,0};
-
-uint8_t mlx0_i2c = 0x0C; // these are the I2C addresses of the five chips that share one I2C bus
-uint8_t mlx1_i2c = 0x13;
-uint8_t mlx2_i2c = 0x12;
-uint8_t mlx3_i2c = 0x10;
-uint8_t mlx4_i2c = 0x11;
 
 void setup()
 {
@@ -46,85 +33,34 @@ void setup()
   Wire.begin();
   Wire.setClock(400000);
   delay(10);
-
-  //start chips given address, -1 for no DRDY pin, and I2C bus object to use
-  byte status = mlx0.begin(mlx0_i2c, -1, Wire);
-  status = mlx1.begin(mlx1_i2c, -1, Wire);
-  status = mlx2.begin(mlx2_i2c, -1, Wire);
-  status = mlx3.begin(mlx3_i2c, -1, Wire);
-  status = mlx4.begin(mlx4_i2c, -1, Wire);
-
-  //default gain and digital filtering set up in the begin() function of library. Adjust here is you want to change them
-  //mlx0.setGain(5); //accepts [0,7]
-  //mlx0.setDigitalFiltering(5); // accepts [2,7]. refer to datasheet for hall configurations
-
-  //Start burst mode for temp, x, y, and z for all chips
-  //Burst mode: continuously sample temp, x, y, and z, at regular intervals without polling
-  mlx0.startBurst(0xF);
-  mlx1.startBurst(0xF);
-  mlx2.startBurst(0xF);
-  mlx3.startBurst(0xF);
-  mlx4.startBurst(0xF);
+  byte status;
+  for(int i = 0; i < 5; i++)
+  {
+    //start chips given address, -1 for no DRDY pin, and I2C bus object to use
+    status = mlx[i].begin(mlx_i2c[i], -1, Wire);
+    mlx[i].startBurst(0xF);
+    //default gain and digital filtering set up in the begin() function of library. Adjust here is you want to change them
+    // mlx[i].setGain(5); //accepts [0,7]
+    // mlx[i].setDigitalFiltering(5); // accepts [2,7]. refer to datasheet for hall configurations
+  }
 }
 
 void loop()
 {
   //continuously read the most recent data from the data registers and save to data
-  mlx0.readBurstData(data0); //Read the values from the sensor
-  mlx1.readBurstData(data1);
-  mlx2.readBurstData(data2);
-  mlx3.readBurstData(data3);
-  mlx4.readBurstData(data4);
-
-  //write string data over serial
-  Serial.print(data0.x);
-  Serial.print("\t");
-  Serial.print(data0.y);
-  Serial.print("\t");
-  Serial.print(data0.z);
-  Serial.print("\t");
-  Serial.print(data0.t);
-  Serial.print("\t");
-
-  Serial.print(data1.x);
-  Serial.print("\t");
-  Serial.print(data1.y);
-  Serial.print("\t");
-  Serial.print(data1.z);
-  Serial.print("\t");
-  Serial.print(data1.t);
-  Serial.print("\t");
-
-  Serial.print(data2.x);
-  Serial.print("\t");
-  Serial.print(data2.y);
-  Serial.print("\t");
-  Serial.print(data2.z);
-  Serial.print("\t");
-  Serial.print(data2.t);
-  Serial.print("\t");
-
-  Serial.print(data3.x);
-  Serial.print("\t");
-  Serial.print(data3.y);
-  Serial.print("\t");
-  Serial.print(data3.z);
-  Serial.print("\t");
-  Serial.print(data3.t);
-  Serial.print("\t");
-
-  Serial.print(data4.x);
-  Serial.print("\t");
-  Serial.print(data4.y);
-  Serial.print("\t");
-  Serial.print(data4.z);
-  Serial.print("\t");
-  Serial.print(data4.t);
-  Serial.print("\t");
-
+  for(int i = 0; i < 5; i++)
+  {
+    mlx[i].readBurstData(data[i]);
+    Serial.print(data[i].t);
+    Serial.print("\t");
+    Serial.print(data[i].x);
+    Serial.print("\t");
+    Serial.print(data[i].y);
+    Serial.print("\t");
+    Serial.print(data[i].z);
+  }
   Serial.println();
 
   //adjust delay to achieve desired sampling rate
-  delayMicroseconds(500);
-
+  // delayMicroseconds(500);
 }
