@@ -10,13 +10,13 @@ This package can be installed using pip:
 pip install anyskin
 ```
 Alternatively, if you would like the latest (potentially unstable) version,
-1. Clone this repository using
+1. Clone this repository:
 ```
-$ git clone https://github.com/raunaqbhirangi/anyskin.git --recursive
+git clone https://github.com/raunaqbhirangi/anyskin.git --recursive
 ```
-2. Install this package using
+2. Install this package:
 ```
-$ pip install -e .
+pip install -e .
 ```
 
 ## Usage: Quick Setup
@@ -29,9 +29,9 @@ This guide assumes you are using the AnySkin startup kit.
 3. Connect the microcontroller (Adafruit QT Py) to your computer using a USB-C cable.
 
 4. Find the dev path your microcontroller is connected to. The simplest way to do this is:
-<br><br>Linux: `ls /dev/ | grep -e ACM -e USB`
-<br>MacOS: `ls /dev/ | grep cu.usb`
-<br>Windows: `TODO`
+<br><br> <b>Linux:</b> `ls /dev/ | grep -e ACM -e USB`. <br>If you get a `can't open device "<port-name>": Permission denied` error, modify permissions to allow read and write on that port. On Linux, this would look like
+<br> <b>MacOS:</b> `ls /dev/ | grep cu.usb`
+<br> <b>Windows:</b> `TODO`
 <br><br>If you have no other devices connected, this should give you a single path. If you see multiple, disconnect the microcontroller and run the command again. Reconnect the microcontroller and re-run the command. The additional path is your `device-port`
 
 5. Run the visualizer with the port identified in the previous step: <br>`anyskin_viz device-port`
@@ -54,4 +54,4 @@ $ sudo chmod a+rw <port-name>
 $ python tests/sensor_proc_test.py -p <port-name>
 ```
 ## Credits
-This package is maintained by [Raunaq Bhirangi](https://www.cs.cmu.edu/~rbhirang/). We would also like to cite the [pyForceDAQ](https://github.com/lindemann09/pyForceDAQ) library which was used as a reference in structuring this package.
+This package is maintained by [Raunaq Bhirangi](https://www.cs.cmu.edu/~rbhirang/). We would also like to cite the [reskin_sensor](https://github.com/raunaqbhirangi/reskin_sensor) library from which much of this library is derived.
