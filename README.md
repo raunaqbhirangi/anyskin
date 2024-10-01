@@ -7,7 +7,7 @@ Latest stable release is v1.0.0
 
 This package can be installed using pip:
 ```
-pip install anyskin
+pip install --index-url https://test.pypi.org/simple/ anyskin
 ```
 Alternatively, if you would like the latest (potentially unstable) version,
 1. Clone this repository:
