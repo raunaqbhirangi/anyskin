@@ -8,13 +8,13 @@ def read(fname):
 
 setup(
     name="anyskin",
-    version="1.0.0",
+    version="1.0.2",
     author="Raunaq Bhirangi",
     author_email="raunaqbhirangi@nyu.edu",
     description="Python library for interfacing with an AnySkin sensor",
     long_description=read("README.md"),
     packages=find_packages(),
-    install_requires=["numpy>=1.24", "pyserial>=3.5", "pygame>=2.6.0"],
+    install_requires=["numpy>=1.21.3", "pyserial>=3.5", "pygame>=2.6.0"],
     python_requires=">=3.8",
     url="https://github.com/raunaqbhirangi/anyskin.git",
     entry_points={
