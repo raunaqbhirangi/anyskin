@@ -5,12 +5,12 @@ import os
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame
 from datetime import datetime
-from reskin_sensor import ReSkinProcess
+from anyskin import AnySkinProcess
 import argparse
 
 if __name__ == "__main__":
     # fmt: off
-    parser = argparse.ArgumentParser(description="Test code to run a ReSkin streaming process in the background. Allows data to be collected without code blocking")
+    parser = argparse.ArgumentParser(description="Test code to run a AnySkin streaming process in the background. Allows data to be collected without code blocking")
     parser.add_argument("-p", "--port", type=str, help="port to which the microcontroller is connected", default="/dev/cu.usbmodem101")
     parser.add_argument("-f", "--file", type=str, help="path to load data from", default=None)
     parser.add_argument("-v", "--viz_mode", type=str, help="visualization mode", default="3d_viz", choices=["magnitude", "3d_viz"])
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # fmt: on
     if args.file is None:
-        sensor_stream = ReSkinProcess(
+        sensor_stream = AnySkinProcess(
             num_mags=5,
             port=args.port,
         )

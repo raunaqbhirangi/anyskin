@@ -1,11 +1,11 @@
 import argparse
 import time
 
-from reskin_sensor import ReSkinProcess
+from anyskin import AnySkinProcess
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Test code to run a ReSkin streaming process in the background. \
+        description="Test code to run a AnySkin streaming process in the background. \
         Allows data to be collected without code blocking"
     )
     # fmt: off
@@ -16,7 +16,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Create sensor stream
-    sensor_stream = ReSkinProcess(
+    sensor_stream = AnySkinProcess(
         num_mags=args.num_mags,
         port=args.port,
         temp_filtered=args.temp_filtered,

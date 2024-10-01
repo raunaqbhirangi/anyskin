@@ -1,12 +1,12 @@
 import serial
 
 import argparse
-from reskin_sensor import ReSkinBase, ReSkinDummy
+from anyskin import AnySkinBase, AnySkinDummy
 
 if __name__ == "__main__":
     # fmt: off
     parser = argparse.ArgumentParser(
-        description="Test code to query ReSkin for a fixed number of data samples"
+        description="Test code to query AnySkin for a fixed number of data samples"
     )
     parser.add_argument("-p", "--port", type=str, help="port to which the microcontroller is connected", required=True,)
     parser.add_argument("-n", "--num_mags", type=int, help="number of magnetometers on the sensor board", default=5,)
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        test_sensor = ReSkinBase(
+        test_sensor = AnySkinBase(
             num_mags=args.num_mags,
             port=args.port,
             temp_filtered=False,
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     except serial.serialutil.SerialException as e:
         print("ERROR: ", e)
         print("Using dummy sensor")
-        test_sensor = ReSkinDummy(
+        test_sensor = AnySkinDummy(
             num_mags=args.num_mags,
             port=args.port,
             baudrate=args.baudrate,

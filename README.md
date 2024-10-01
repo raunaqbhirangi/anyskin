@@ -1,25 +1,25 @@
-# Reskin Sensor Library
-This is a python library to interface with [ReSkin](https://openreview.net/forum?id=87_OJU4sw3V) sensors. We provide two classes for interfacing with [ReSkin](https://openreview.net/forum?id=87_OJU4sw3V). The `ReSkinBase` class is good for standalone data collection: it blocks code execution while data is being collected. The `ReSkinProcess` class can be used for non-blocking background data collection. Data can be buffered in the background while you run the rest of your code.
+# AnySkin Sensor Library
+This is a python library to interface with [AnySkin](https://any-skin.github.io) sensors. Much of this is adapted and streamlined from the [reskin_sensor](https://github.com/raunaqbhirangi/reskin_sensor) library. We provide two classes for interfacing with [AnySkin](https://openreview.net/forum?id=87_OJU4sw3V). The `AnySkinBase` class is good for standalone data collection: it blocks code execution while data is being collected. The `AnySkinProcess` class can be used for non-blocking background data collection. Data can be buffered in the background while you run the rest of your code.
 
-Latest stable release is v3.0.0
+Latest stable release is v1.0.0
 
 ## Installation
 
 This package can be installed using pip:
 ```
-pip install reskin_sensor
+pip install anyskin
 ```
 Alternatively, if you would like the latest (potentially unstable) version,
 1. Clone this repository using
 ```
-$ git clone https://github.com/raunaqbhirangi/reskin_sensor.git --recursive
+$ git clone https://github.com/raunaqbhirangi/anyskin.git --recursive
 ```
 2. Install this package using
 ```
 $ pip install -e .
 ```
 
-## Usage: Quick Setup (AnySkin)
+## Usage: Quick Setup
 This guide assumes you are using the AnySkin startup kit.
 
 1. Connect the magnetometer circuit board to the microcontroller using the provided QWIIC cable.
@@ -36,8 +36,8 @@ This guide assumes you are using the AnySkin startup kit.
 
 5. Run the visualizer with the port identified in the previous step: <br>`python visualizations/anyskin_viz.py -p device-port`
 
-## Usage: Full Setup (ReSkin/AnySkin)
-This guide is recommended if you are relatively familiar with ReSkin/AnySkin and are using independently sourced components.
+## Usage: Full Setup
+This guide is recommended if you are relatively familiar with AnySkin and are using independently sourced components.
 
 1. Connect the magnetometer circuit board to the microcontroller.
 

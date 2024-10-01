@@ -1,6 +1,6 @@
 # Overview
 
-The zip file contains all the information necessary to fabricate the 5X ReSkin circuit board. The BOM, Bill of Materials, details the components needed to populate the corresponding circuit design. You may choose to manufacture by yourself, if you have access to a PCB mill, and solder yourself, with a reflow oven. However, we recommend ordering your boards from a 3rd party vendor, such as PCBWay or OSHPark, as they are relatively inexpensive, quick, and high-quality. 
+The zip file contains all the information necessary to fabricate the 5X AnySkin circuit board. The BOM, Bill of Materials, details the components needed to populate the corresponding circuit design. You may choose to manufacture by yourself, if you have access to a PCB mill, and solder yourself, with a reflow oven. However, we recommend ordering your boards from a 3rd party vendor, such as PCBWay or OSHPark, as they are relatively inexpensive, quick, and high-quality.
 
   ### Note: The shipping is often the biggest bottleneck in price and time - consider placing large, shared orders if you are able.
 
@@ -53,7 +53,7 @@ The zip file contains all the information necessary to fabricate the 5X ReSkin c
     - EMI shielding film: without
     - Other Special Request: None
 6. Assembly service
-    - Turnkey 
+    - Turnkey
     - Board type: single pieces
     - Quantity: [number of boards you want assembled, can be equal to or less than number of boards manufactured above]
     - Pay attention: No sensitive parts

@@ -6,12 +6,12 @@ from multiprocessing import Process, Event, Pipe, Value, Array
 import numpy as np
 import serial
 
-from .sensor import ReSkinBase, ReSkinDummy
+from .sensor import AnySkinBase, AnySkinDummy
 
 
-class ReSkinProcess(Process):
+class AnySkinProcess(Process):
     """
-    Process to keep ReSkin datastream running in the background.
+    Process to keep AnySkin datastream running in the background.
 
     Attributes
     ----------
@@ -28,9 +28,6 @@ class ReSkinProcess(Process):
     temp_filtered: bool
         Flag indicating if temperature readings should be filtered from
         the output
-    reskin_data_struct: bool
-        Flag indicating whether the ReSkinData structure should be used for
-        output data
     allow_dummy_sensor: bool
         Flag to instantiate a dummy sensor if a real sensor with the specified
         configurations is unavailable
@@ -40,15 +37,15 @@ class ReSkinProcess(Process):
     Methods
     -------
     start_streaming():
-        Start streaming data from ReSkin sensor
+        Start streaming data from AnySkin sensor
     start_buffering(overwrite=False):
-        Start buffering ReSkin data. Call is ignored if already buffering
+        Start buffering AnySkin data. Call is ignored if already buffering
     pause_buffering():
-        Stop buffering ReSkin data
+        Stop buffering AnySkin data
     pause_streaming():
-        Stop streaming data from ReSkin sensor
+        Stop streaming data from AnySkin sensor
     get_data(num_samples=5):
-        Return a specified number of samples from the ReSkin Sensor
+        Return a specified number of samples from the AnySkin Sensor
     get_buffer(timeout=1.0, pause_if_buffering=False):
         Return the recorded buffer
     """
@@ -62,8 +59,8 @@ class ReSkinProcess(Process):
         burst_mode: bool = True,
         baudrate: int = 115200,
     ):
-        """Initializes a ReSkinProcess object."""
-        super(ReSkinProcess, self).__init__()
+        """Initializes a AnySkinProcess object."""
+        super(AnySkinProcess, self).__init__()
         self.num_mags = num_mags
         self.port = port
         self.baudrate = baudrate
@@ -104,14 +101,14 @@ class ReSkinProcess(Process):
         return self._sample_cnt.value
 
     def start_streaming(self):
-        """Start streaming data from ReSkin sensor"""
+        """Start streaming data from AnySkin sensor"""
         if not self._event_quit_request.is_set():
             self._event_is_streaming.set()
             print("Started streaming")
 
     def start_buffering(self, overwrite: bool = False):
         """
-        Start buffering ReSkin data. Call is ignored if already buffering
+        Start buffering AnySkin data. Call is ignored if already buffering
 
         Parameters
         ----------
@@ -131,16 +128,16 @@ class ReSkinProcess(Process):
             print("Warning: Data is already buffering")
 
     def pause_buffering(self):
-        """Stop buffering ReSkin data"""
+        """Stop buffering AnySkin data"""
         self._event_is_buffering.clear()
 
     def pause_streaming(self):
-        """Stop streaming data from ReSkin sensor"""
+        """Stop streaming data from AnySkin sensor"""
         self._event_is_streaming.clear()
 
     def get_data(self, num_samples=5):
         """
-        Return a specified number of samples from the ReSkin Sensor
+        Return a specified number of samples from the AnySkin Sensor
 
         Parameters
         ----------
@@ -204,14 +201,14 @@ class ReSkinProcess(Process):
         self.pause_buffering()
         self.pause_streaming()
 
-        super(ReSkinProcess, self).join(timeout)
+        super(AnySkinProcess, self).join(timeout)
 
     def run(self):
         """This loop runs until it's asked to quit."""
         buffer = []
         # Initialize sensor
         try:
-            self.sensor = ReSkinBase(
+            self.sensor = AnySkinBase(
                 num_mags=self.num_mags,
                 port=self.port,
                 baudrate=self.baudrate,
@@ -225,14 +222,13 @@ class ReSkinProcess(Process):
             print("ERROR: ", e)
             if self.allow_dummy_sensor:
                 print("Using dummy sensor")
-                self.sensor = ReSkinDummy(
+                self.sensor = AnySkinDummy(
                     num_mags=self.num_mags,
                     port=self.port,
                     baudrate=self.baudrate,
                     burst_mode=self.burst_mode,
                     device_id=self.device_id,
                     temp_filtered=self.temp_filtered,
-                    reskin_data_struct=True,
                 )
                 self.start_streaming()
             else:

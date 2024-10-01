@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
 
-from reskin_sensor import ReSkinProcess
+from anyskin import AnySkinProcess
 
 
 def plot_heatmap(data, num_mags):
@@ -54,10 +54,10 @@ def update_data(ax, sensor, init_time, baseline, ln, xdata, ydata, i):
 
 if __name__ == "__main__":
     # fmt: off
-    parser = argparse.ArgumentParser(description="Visualize ReSkin data as a heatmap")
+    parser = argparse.ArgumentParser(description="Visualize AnySkin data as a heatmap")
     parser.add_argument("--stream", action="store_true", help="Flag to stream live data")
     parser.add_argument("-nm", "--num-mags", type=int, required=True, help="Number of magnetometers")
-    parser.add_argument("-p", "--port", type=str, default="/dev/ttyACM0", help="ReSkin port; ignored if not streaming")
+    parser.add_argument("-p", "--port", type=str, default="/dev/ttyACM0", help="AnySkin port; ignored if not streaming")
     parser.add_argument("-ws", "--window-size", type=int, default=1000, help="Number of samples visualized at a time")
     parser.add_argument("--lims", type=float, nargs=2, default=[-300., 300.], help="Colorbar limits for streaming")
 
@@ -69,17 +69,17 @@ if __name__ == "__main__":
     num_mags = args.num_mags
 
     if args.stream:
-        reskin = ReSkinProcess(
+        anyskin = AnySkinProcess(
             num_mags=args.num_mags,
             port=args.port,
         )
-        reskin.start()
+        anyskin.start()
         time.sleep(1.0)
-        init_data = np.array(reskin.get_data(num_samples))
+        init_data = np.array(anyskin.get_data(num_samples))
         baseline = np.mean(init_data[..., 1:], axis=0, keepdims=True)
         init_time = init_data[0, 0]
 
-        reskin.start_buffering()
+        anyskin.start_buffering()
 
         fig, ax = plt.subplots()
         xdata, ydata = deque(maxlen=num_samples), deque(maxlen=num_samples)
@@ -99,7 +99,9 @@ if __name__ == "__main__":
 
         ani = FuncAnimation(
             fig,
-            lambda i: update_data(ax, reskin, init_time, baseline, ln, xdata, ydata, i),
+            lambda i: update_data(
+                ax, anyskin, init_time, baseline, ln, xdata, ydata, i
+            ),
             blit=False,
         )
         plt.show()

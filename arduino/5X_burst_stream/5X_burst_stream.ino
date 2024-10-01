@@ -1,18 +1,18 @@
 /*
-  5X ReSkin Board Example Code
+  5X AnySkin Board Code
   By: Tess Hellebrekers
   Date: October 22, 2021
   License: This code is public domain but you buy me a beer if you use this and we meet someday (Beerware license).
 
   Library: Heavily based on original MLX90393 library from Theodore Yapo (https://github.com/tedyapo/arduino-MLX90393)
   Use this fork (https://github.com/tesshellebrekers/arduino-MLX90393) to access additional burst mode commands
-  
-  Read the XYZ magnetic flux fields and temperature across all five chips on the 5X ReSkin board
+
+  Read the XYZ magnetic flux fields and temperature across all five chips on the 5X board
   Print binary data over serial port
 */
 
 #include <Wire.h>
-#include <MLX90393.h> 
+#include <MLX90393.h>
 
 #define Serial SERIAL_PORT_USBVIRTUAL
 
@@ -46,7 +46,7 @@ void setup()
   Wire.begin();
   Wire.setClock(400000);
   delay(10);
-  
+
   //start chips given address, -1 for no DRDY pin, and I2C bus object to use
   byte status = mlx0.begin(mlx0_i2c, -1, Wire);
   status = mlx1.begin(mlx1_i2c, -1, Wire);
@@ -57,7 +57,7 @@ void setup()
   //default gain and digital filtering set up in the begin() function of library. Adjust here is you want to change them
   //mlx0.setGain(5); //accepts [0,7]
   //mlx0.setDigitalFiltering(5); // accepts [2,7]. refer to datasheet for hall configurations
-  
+
   //Start burst mode for temp, x, y, and z for all chips
   //Burst mode: continuously sample temp, x, y, and z, at regular intervals without polling
   mlx0.startBurst(0xF);
@@ -71,10 +71,10 @@ void loop()
 {
   //continuously read the most recent data from the data registers and save to data
   mlx0.readBurstData(data0); //Read the values from the sensor
-  mlx1.readBurstData(data1); 
-  mlx2.readBurstData(data2); 
-  mlx3.readBurstData(data3); 
-  mlx4.readBurstData(data4); 
+  mlx1.readBurstData(data1);
+  mlx2.readBurstData(data2);
+  mlx3.readBurstData(data3);
+  mlx4.readBurstData(data4);
 
   //write string data over serial
   Serial.print(data0.x);
@@ -85,7 +85,7 @@ void loop()
   Serial.print("\t");
   Serial.print(data0.t);
   Serial.print("\t");
-  
+
   Serial.print(data1.x);
   Serial.print("\t");
   Serial.print(data1.y);
@@ -94,16 +94,16 @@ void loop()
   Serial.print("\t");
   Serial.print(data1.t);
   Serial.print("\t");
-  
+
   Serial.print(data2.x);
   Serial.print("\t");
   Serial.print(data2.y);
   Serial.print("\t");
   Serial.print(data2.z);
-  Serial.print("\t");     
+  Serial.print("\t");
   Serial.print(data2.t);
   Serial.print("\t");
-  
+
   Serial.print(data3.x);
   Serial.print("\t");
   Serial.print(data3.y);
@@ -121,7 +121,7 @@ void loop()
   Serial.print("\t");
   Serial.print(data4.t);
   Serial.print("\t");
-  
+
   Serial.println();
 
   //adjust delay to achieve desired sampling rate

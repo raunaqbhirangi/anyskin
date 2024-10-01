@@ -1,16 +1,13 @@
-import collections
 import struct
 import time
 
 import numpy as np
 import serial
 
-ReSkinData = collections.namedtuple("ReSkinData", "time, acq_delay, data, dev_id")
 
-
-class ReSkinBase(serial.Serial):
+class AnySkinBase(serial.Serial):
     """
-    Base class for a ReSkin sensor.
+    Base class for a AnySkin sensor.
 
     Attributes
     ----------
@@ -27,9 +24,6 @@ class ReSkinBase(serial.Serial):
     temp_filtered: bool
         Flag indicating if temperature readings should be filtered from
         the output
-    reskin_data_struct: bool
-        Flag indicating whether the ReSkinData structure should be used for
-        output data
 
     Methods
     -------
@@ -46,7 +40,7 @@ class ReSkinBase(serial.Serial):
         burst_mode: bool = True,
         baudrate: int = 115200,
     ) -> None:
-        """Initializes a ReSkinBase object."""
+        """Initializes a AnySkinBase object."""
 
         self.num_mags = num_mags
         self.port_name = port
@@ -61,7 +55,7 @@ class ReSkinBase(serial.Serial):
         if temp_filtered:
             self._temp_mask[::4] = False
 
-        super(ReSkinBase, self).__init__(port=port, baudrate=baudrate)
+        super(AnySkinBase, self).__init__(port=port, baudrate=baudrate)
         self._initialize()
 
     def _initialize(self):
@@ -136,7 +130,7 @@ class ReSkinBase(serial.Serial):
                 pass
 
 
-class ReSkinDummy(ReSkinBase):
+class AnySkinDummy(AnySkinBase):
     def __init__(
         self,
         num_mags: int = 1,
@@ -145,14 +139,12 @@ class ReSkinDummy(ReSkinBase):
         burst_mode: bool = True,
         device_id: int = -1,
         temp_filtered: bool = False,
-        reskin_data_struct: bool = True,
     ):
         self.num_mags = num_mags
         self.port_name = port
         self.baud_rate = baudrate
         self.burst_mode = burst_mode
         self.device_id = device_id
-        self.reskin_data_struct = reskin_data_struct
 
         self._msg_floats = 4 * num_mags
         self._msg_length = 4 * self._msg_floats + 2
