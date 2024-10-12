@@ -32,9 +32,9 @@ This guide assumes you are using the AnySkin startup kit.
 <br><br> <b>Linux:</b> `ls /dev/ | grep -e ACM -e USB`. This is generally `/dev/ttyACM0` or `/dev/ttyUSB0`. <br>If you get a `can't open device "<port>": Permission denied` error, modify permissions to allow read and write on that port: `sudo chmod a+rw <port>`
 <br> <b>MacOS:</b> `ls /dev/ | grep cu.usb`. This is generally `cu.usbmodem*`.
 <br> <b>Windows:</b> Open Device Manager. Click `View` and select `Show Hidden Devices`. Locate `Ports (COM & LPT)`. Note the `COM` port corresponding to the QT Py.
-<br><br>If you have no other devices connected, this should give you a single path. If you see multiple, disconnect the microcontroller and run the command again. Reconnect the microcontroller and re-run the command. The additional path is your `port`.
+<br><br>If you have no other devices connected, this should give you a single path. If you see multiple, disconnect the microcontroller and run the command again. Reconnect the microcontroller and re-run the command. The additional path is your `<port>`.
 
-5. Run the visualizer with the port identified in the previous step: <br>`anyskin_viz port`
+5. Run the visualizer with the port identified in the previous step: <br>`anyskin_viz <port>`
 
 ## Usage: Full Setup
 This guide is recommended if you are relatively familiar with AnySkin and are using independently sourced components.
