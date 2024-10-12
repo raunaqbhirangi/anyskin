@@ -28,9 +28,9 @@ This guide assumes you are using the AnySkin startup kit.
 
 3. Connect the microcontroller (Adafruit QT Py) to your computer using a USB-C cable.
 
-4. Find the dev path your microcontroller is connected to. The simplest way to do this is:
-<br><br> <b>Linux:</b> `ls /dev/ | grep -e ACM -e USB`. <br>If you get a `can't open device "<port-name>": Permission denied` error, modify permissions to allow read and write on that port. On Linux, this would look like
-<br> <b>MacOS:</b> `ls /dev/ | grep cu.usb`
+4. Find the dev path/COM port your microcontroller is connected to. The simplest way to do this is:
+<br><br> <b>Linux:</b> `ls /dev/ | grep -e ACM -e USB`. This is generally `/dev/ttyACM0` or `/dev/ttyUSB0`. <br>If you get a `can't open device "<port-name>": Permission denied` error, modify permissions to allow read and write on that port. 
+<br> <b>MacOS:</b> `ls /dev/ | grep cu.usb`. This is generally `cu.usbmodem*`.
 <br> <b>Windows:</b> Open Device Manager. Click `View` and select `Show Hidden Devices`. Locate `Ports (COM & LPT)`. Note the `COM` port corresponding to the QT Py.
 <br><br>If you have no other devices connected, this should give you a single path. If you see multiple, disconnect the microcontroller and run the command again. Reconnect the microcontroller and re-run the command. The additional path is your `port`.
 
