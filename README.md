@@ -36,5 +36,7 @@ This guide assumes you are using the AnySkin startup kit.
 
 5. Run the visualizer with the `<port>` identified in the previous step: <br>`anyskin_viz <port>`
 
+6. Over time, the sensor measurement will drift and you may see a non-zero measurement without any load being applied. When this happens, press the `B` key to recalibrate your zero measurement.
+
 ## Credits
 This package is maintained by [Raunaq Bhirangi](https://www.cs.cmu.edu/~rbhirang/). We would also like to cite the [reskin_sensor](https://github.com/raunaqbhirangi/reskin_sensor) library from which much of this library is derived.
